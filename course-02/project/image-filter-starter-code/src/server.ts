@@ -36,6 +36,18 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
+  //ImageFilter endpoint
+  app.get("/filteredimage",async (req ,res) => {
+    let { image_url } = req.query;
+
+    if(!image_url){
+      return res.status(400).send({message: 'image url is not valid'});
+    }
+    filterImageFromURL(image_url)
+    .then(filteredpath => {
+      res.sendFile(filteredpath, err => { deleteLocalFiles([filteredpath]); })
+    })
+  });
   
 
   // Start the Server
